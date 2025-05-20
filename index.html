@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Compartilhe seu Grupo</title>
+  <title>Grupos Cadastrados</title>
   <style>
     body {
       font-family: 'Open Sans', sans-serif;
@@ -17,32 +17,6 @@
       color: white;
       padding: 2rem;
       text-align: center;
-    }
-    form {
-      max-width: 600px;
-      margin: 2rem auto;
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    input, textarea, select, button {
-      width: 100%;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-    button {
-      background-color: #007BFF;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background-color: #0056b3;
     }
     .grupo-container {
       max-width: 1000px;
@@ -87,75 +61,45 @@
     .link-btn:hover {
       background-color: #0056b3;
     }
-    .mensagem-sucesso {
-      max-width: 600px;
-      margin: 1rem auto;
-      padding: 1rem;
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-      border-radius: 8px;
-      text-align: center;
-      display: none;
-    }
   </style>
 </head>
 <body>
   <header>
-    <h1>Compartilhe seu Grupo</h1>
-    <p>Preencha o formulário abaixo e veja seu grupo publicado imediatamente.</p>
+    <h1>Grupos Facebook Enviados</h1>
+    <p>Veja abaixo os grupos já cadastrados por outros usuários.</p>
   </header>
-
-  <div id="mensagemSucesso" class="mensagem-sucesso">Seu grupo foi enviado com sucesso!</div>
-
-  <form id="formGrupo">
-    <label>Imagem do Grupo (1080x1080)*</label>
-    <input type="file" id="imagem" required>
-
-    <label>Nome do Grupo*</label>
-    <input type="text" id="nome" required>
-
-    <label>Privacidade do Grupo*</label>
-    <select id="privacidade" required>
-      <option value="publico">Público</option>
-      <option value="privado">Privado</option>
-    </select>
-
-    <label>Descrição do Grupo*</label>
-    <textarea id="descricao" rows="4" required></textarea>
-
-    <label>Link para o Grupo*</label>
-    <input type="url" id="link" required>
-
-    <button type="submit">Publicar Grupo</button>
-  </form>
 
   <div class="grupo-container" id="grupos"></div>
 
   <script>
     // Carregar grupos do GitHub
     async function carregarGrupos() {
-      const resposta = await fetch('https://raw.githubusercontent.com/thomazeletro/grupos-facebook/main/grupos.json');
-      const grupos = await resposta.json();
-      const container = document.getElementById('grupos');
+      try {
+        const resposta = await fetch('https://raw.githubusercontent.com/thomazeletro/grupos-facebook/main/grupos.json');
+        const grupos = await resposta.json();
+        const container = document.getElementById('grupos');
 
-      grupos.forEach(grupo => {
-        const grupoHTML = `
-          <div class="grupo-card">
-            <img src="${grupo.imagem}" alt="Imagem do Grupo">
-            <h3>${grupo.nome}</h3>
-            <span class="badge ${grupo.privacidade === 'publico' ? 'publico' : 'privado'}">
-              ${grupo.privacidade === 'publico' ? '🔓 Público' : '🔒 Privado'}
-            </span>
-            <p>${grupo.descricao}</p>
-            <a href="${grupo.link}" target="_blank" class="link-btn">Entrar no Grupo</a>
-          </div>
-        `;
-        container.insertAdjacentHTML('beforeend', grupoHTML);
-      });
+        grupos.forEach(grupo => {
+          const grupoHTML = `
+            <div class="grupo-card">
+              <img src="${grupo.imagem}" alt="Imagem do Grupo">
+              <h3>${grupo.nome}</h3>
+              <span class="badge ${grupo.privacidade === 'publico' ? 'publico' : 'privado'}">
+                ${grupo.privacidade === 'publico' ? '🔓 Público' : '🔒 Privado'}
+              </span>
+              <p>${grupo.descricao}</p>
+              <a href="${grupo.link}" target="_blank" class="link-btn">Entrar no Grupo</a>
+            </div>
+          `;
+          container.insertAdjacentHTML('beforeend', grupoHTML);
+        });
+      } catch (erro) {
+        console.error('Erro ao carregar os grupos:', erro);
+      }
     }
 
     carregarGrupos();
   </script>
 </body>
 </html>
+
